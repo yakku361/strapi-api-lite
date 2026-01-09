@@ -44,5 +44,22 @@ export function createCollectionRepository<T>(
         meta: normalized.meta,
       }
     },
+
+    async create(payload: Partial<T>, query?: RepositoryQuery) {
+      const response = await http.post<StrapiRestSingle<T>>(baseUrl, { data: payload }, query)
+      return normalizeSingleResponse<T>(response)
+    },
+
+    async update(id: string | number, payload: Partial<T>, query?: RepositoryQuery) {
+      const url = `${baseUrl}/${id}`
+      const response = await http.put<StrapiRestSingle<T>>(url, { data: payload }, query)
+      return normalizeSingleResponse<T>(response)
+    },
+
+    async delete(id: string | number, query?: RepositoryQuery) {
+      const url = `${baseUrl}/${id}`
+      const response = await http.delete<StrapiRestSingle<T>>(url, query)
+      return normalizeSingleResponse<T>(response)
+    },
   }
 }

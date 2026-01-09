@@ -18,12 +18,15 @@ export const createStrapiClient = (apiBase) => {
         }
         return `${encodeURIComponent(prefix ?? '')}=${encodeURIComponent(String(value))}`;
     };
+    const buildUrl = (path, params) => {
+        const query = params ? toQueryString(params) : '';
+        return query ? `${path}?${query}` : path;
+    };
     return {
-        get: async (path, params) => {
-            const query = params ? toQueryString(params) : '';
-            const url = query ? `${path}?${query}` : path;
-            return client(url);
-        },
+        get: async (path, params) => client(buildUrl(path, params)),
+        post: async (path, body, params) => client(buildUrl(path, params), { method: 'POST', body: body }),
+        put: async (path, body, params) => client(buildUrl(path, params), { method: 'PUT', body: body }),
+        delete: async (path, params) => client(buildUrl(path, params), { method: 'DELETE' }),
     };
 };
 export const mergeFilters = (query, filters) => ({

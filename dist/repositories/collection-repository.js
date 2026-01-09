@@ -28,6 +28,20 @@ export function createCollectionRepository(collectionName, http) {
                 meta: normalized.meta,
             };
         },
+        async create(payload, query) {
+            const response = await http.post(baseUrl, { data: payload }, query);
+            return normalizeSingleResponse(response);
+        },
+        async update(id, payload, query) {
+            const url = `${baseUrl}/${id}`;
+            const response = await http.put(url, { data: payload }, query);
+            return normalizeSingleResponse(response);
+        },
+        async delete(id, query) {
+            const url = `${baseUrl}/${id}`;
+            const response = await http.delete(url, query);
+            return normalizeSingleResponse(response);
+        },
     };
 }
 //# sourceMappingURL=collection-repository.js.map

@@ -3,6 +3,9 @@ export const createCollectionService = (repository) => ({
     list: (query) => repository.findAll(query),
     getById: (id, query) => repository.findOneById(id, query),
     getBySlug: (slug, query) => repository.findOneBySlug(slug, query),
+    create: (payload, query) => repository.create(payload, query),
+    update: (id, payload, query) => repository.update(id, payload, query),
+    delete: (id, query) => repository.delete(id, query),
 });
 const isPlainObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value);
 const mergeFiltersDeep = (defaults, overrides) => {
@@ -61,6 +64,9 @@ export const withDefaults = (factory, defaults) => (repository) => {
         list: (query) => service.list(mergeQueries(defaults, query)),
         getById: (id, query) => service.getById(id, mergeQueries(defaults, query)),
         getBySlug: (slug, query) => service.getBySlug(slug, mergeQueries(defaults, query)),
+        create: (payload, query) => service.create(payload, query),
+        update: (id, payload, query) => service.update(id, payload, query),
+        delete: (id, query) => service.delete(id, query),
     };
 };
 //# sourceMappingURL=collection-service.js.map

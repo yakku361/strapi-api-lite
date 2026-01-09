@@ -46,10 +46,29 @@ await services.articleService.getBySlug('hello-world', { populate: ['author', 's
 ```
 Populate-Arrays werden mit den Defaults zusammengeführt (ohne Duplikate); `populate: []` schaltet die Defaults ab.
 
+Eintrag erstellen (POST):
+
+```ts
+await services.articleService.create({ title: 'Neu', slug: 'neu' })
+// Body wird automatisch als { data: ... } gesendet und Response flach normalisiert.
+```
+
+Eintrag aktualisieren (PUT):
+
+```ts
+await services.articleService.update(1, { title: 'Aktualisiert' })
+```
+
+Eintrag löschen (DELETE):
+
+```ts
+await services.articleService.delete(1)
+```
+
 ## Bausteine
 
 - `createStrapiClient(apiBase)`: `ofetch`-Wrapper mit Query-Serializer.
-- `createCollectionRepository(collectionName, httpClient)`: generisches Repo mit `findAll`, `findOneById`, `findOneBySlug`.
+- `createCollectionRepository(collectionName, httpClient)`: generisches Repo mit `findAll`, `findOneById`, `findOneBySlug`, `create`, `update`, `delete`.
 - Vorkonfigurierte Repositories: `createArticleRepository`, `createCategoryRepository`, `createPageRepository`, `createProductRepository`.
 - `createRepositories(apiBase, collections?)`: bündelt die Repos, erlaubt Slug-Overrides.
 - `CollectionName`-Enum: Default-Slugs (`articles`, `categories`, `pages`, `products`).

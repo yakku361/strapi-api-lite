@@ -52,10 +52,20 @@ export interface RepositoryQuery {
 
 export interface HttpClient {
   get<T>(path: StrapiRequestPath, params?: RepositoryQuery): Promise<T>
+  post<T>(path: StrapiRequestPath, body: unknown, params?: RepositoryQuery): Promise<T>
+  put<T>(path: StrapiRequestPath, body: unknown, params?: RepositoryQuery): Promise<T>
+  delete<T>(path: StrapiRequestPath, params?: RepositoryQuery): Promise<T>
 }
 
 export interface CollectionRepository<T> {
   findAll(query?: RepositoryQuery): Promise<StrapiCollectionResponse<T>>
   findOneById(id: string | number, query?: RepositoryQuery): Promise<StrapiSingleResponse<T>>
   findOneBySlug(slug: string, query?: RepositoryQuery): Promise<StrapiSingleResponse<T>>
+  create(payload: Partial<T>, query?: RepositoryQuery): Promise<StrapiSingleResponse<T>>
+  update(
+    id: string | number,
+    payload: Partial<T>,
+    query?: RepositoryQuery
+  ): Promise<StrapiSingleResponse<T>>
+  delete(id: string | number, query?: RepositoryQuery): Promise<StrapiSingleResponse<T>>
 }

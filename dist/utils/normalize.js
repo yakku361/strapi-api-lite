@@ -16,7 +16,12 @@ const normalizeValue = (value) => {
         const { id, attributes, ...rest } = value;
         const normalizedAttributes = normalizeValue(attributes);
         const normalizedRest = normalizeObject(rest);
-        // Media objects often expose url; if attributes already normalized to primitive/url, keep it.
+        if (normalizedAttributes === null || typeof normalizedAttributes !== 'object' || Array.isArray(normalizedAttributes)) {
+            const fallbackAttributes = attributes && typeof attributes === 'object' && !Array.isArray(attributes)
+                ? normalizeObject(attributes)
+                : { attributes: normalizedAttributes };
+            return normalizeValue({ id, ...fallbackAttributes, ...normalizedRest });
+        }
         return normalizeValue({ id, ...normalizedAttributes, ...normalizedRest });
     }
     // Media objects: prefer url if present

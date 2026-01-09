@@ -8,6 +8,10 @@ export const createCollectionService = <T>(
   list: (query?: RepositoryQuery) => repository.findAll(query),
   getById: (id: string | number, query?: RepositoryQuery) => repository.findOneById(id, query),
   getBySlug: (slug: string, query?: RepositoryQuery) => repository.findOneBySlug(slug, query),
+  create: (payload: Partial<T>, query?: RepositoryQuery) => repository.create(payload, query),
+  update: (id: string | number, payload: Partial<T>, query?: RepositoryQuery) =>
+    repository.update(id, payload, query),
+  delete: (id: string | number, query?: RepositoryQuery) => repository.delete(id, query),
 })
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
@@ -80,5 +84,8 @@ export const withDefaults = <T>(
     list: (query) => service.list(mergeQueries(defaults, query)),
     getById: (id, query) => service.getById(id, mergeQueries(defaults, query)),
     getBySlug: (slug, query) => service.getBySlug(slug, mergeQueries(defaults, query)),
+    create: (payload, query) => service.create(payload, query),
+    update: (id, payload, query) => service.update(id, payload, query),
+    delete: (id, query) => service.delete(id, query),
   }
 }

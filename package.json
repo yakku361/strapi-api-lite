@@ -1,6 +1,6 @@
 {
   "name": "strapi-rest-lite",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",

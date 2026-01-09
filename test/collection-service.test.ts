@@ -7,6 +7,9 @@ const createRepository = () =>
     findAll: vi.fn().mockResolvedValue({ data: [], meta: {} }),
     findOneById: vi.fn().mockResolvedValue({ data: null, meta: {} }),
     findOneBySlug: vi.fn().mockResolvedValue({ data: null, meta: {} }),
+    create: vi.fn().mockResolvedValue({ data: null, meta: {} }),
+    update: vi.fn().mockResolvedValue({ data: null, meta: {} }),
+    delete: vi.fn().mockResolvedValue({ data: null, meta: {} }),
   }) as unknown as CollectionRepository<unknown>
 
 describe('withDefaults', () => {
@@ -52,5 +55,42 @@ describe('withDefaults', () => {
       populate: '*',
       filters: { visibility: { $eq: 'private' }, locale: { $eq: 'en' } },
     })
+  })
+
+  it('passes create through without merging defaults', async () => {
+    const repository = createRepository()
+    const defaults = { populate: ['author'], filters: { visibility: { $eq: 'public' } } }
+    const service = withDefaults(createCollectionService, defaults)(repository)
+
+    await service.create({ title: 'New' }, { populate: ['seo'], filters: { locale: { $eq: 'de' } } })
+
+    expect(repository.create).toHaveBeenCalledWith(
+      { title: 'New' },
+      { populate: ['seo'], filters: { locale: { $eq: 'de' } } }
+    )
+  })
+
+  it('passes update through without merging defaults', async () => {
+    const repository = createRepository()
+    const defaults = { populate: ['author'], filters: { visibility: { $eq: 'public' } } }
+    const service = withDefaults(createCollectionService, defaults)(repository)
+
+    await service.update(2, { title: 'Updated' }, { populate: ['seo'], filters: { locale: { $eq: 'de' } } })
+
+    expect(repository.update).toHaveBeenCalledWith(
+      2,
+      { title: 'Updated' },
+      { populate: ['seo'], filters: { locale: { $eq: 'de' } } }
+    )
+  })
+
+  it('passes delete through without merging defaults', async () => {
+    const repository = createRepository()
+    const defaults = { populate: ['author'], filters: { visibility: { $eq: 'public' } } }
+    const service = withDefaults(createCollectionService, defaults)(repository)
+
+    await service.delete(3, { locale: 'en' })
+
+    expect(repository.delete).toHaveBeenCalledWith(3, { locale: 'en' })
   })
 })

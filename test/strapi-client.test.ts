@@ -43,6 +43,60 @@ describe('createStrapiClient', () => {
 
     expect(result).toBe('/categories')
   })
+
+  it('sends POST with body and serializes params', async () => {
+    const requestMock = vi.fn()
+    createSpy.mockReturnValue(requestMock)
+    const client = createStrapiClient('https://cms.example.com/api')
+
+    await client.post('/articles', { data: { title: 'Hello' } }, { populate: ['author'] })
+
+    expect(requestMock).toHaveBeenCalledTimes(1)
+    const [url, options] = requestMock.mock.calls[0] as [string, Record<string, unknown>]
+    const parsed = new URL(`http://dummy${url}`)
+
+    expect(parsed.pathname).toBe('/articles')
+    expect(parsed.searchParams.get('populate[0]')).toBe('author')
+    expect(options).toEqual({
+      method: 'POST',
+      body: { data: { title: 'Hello' } },
+    })
+  })
+
+  it('sends PUT with body and serializes params', async () => {
+    const requestMock = vi.fn()
+    createSpy.mockReturnValue(requestMock)
+    const client = createStrapiClient('https://cms.example.com/api')
+
+    await client.put('/articles/5', { data: { title: 'Updated' } }, { locale: 'de' })
+
+    expect(requestMock).toHaveBeenCalledTimes(1)
+    const [url, options] = requestMock.mock.calls[0] as [string, Record<string, unknown>]
+    const parsed = new URL(`http://dummy${url}`)
+
+    expect(parsed.pathname).toBe('/articles/5')
+    expect(parsed.searchParams.get('locale')).toBe('de')
+    expect(options).toEqual({
+      method: 'PUT',
+      body: { data: { title: 'Updated' } },
+    })
+  })
+
+  it('sends DELETE and serializes params', async () => {
+    const requestMock = vi.fn()
+    createSpy.mockReturnValue(requestMock)
+    const client = createStrapiClient('https://cms.example.com/api')
+
+    await client.delete('/articles/6', { locale: 'fr' })
+
+    expect(requestMock).toHaveBeenCalledTimes(1)
+    const [url, options] = requestMock.mock.calls[0] as [string, Record<string, unknown>]
+    const parsed = new URL(`http://dummy${url}`)
+
+    expect(parsed.pathname).toBe('/articles/6')
+    expect(parsed.searchParams.get('locale')).toBe('fr')
+    expect(options).toEqual({ method: 'DELETE' })
+  })
 })
 
 describe('mergeFilters', () => {
